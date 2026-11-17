@@ -1,0 +1,10 @@
+node_modules
+.git
+.env
+tests
+infra
+k8s
+monitoring
+.github
+coverage
+*.md
