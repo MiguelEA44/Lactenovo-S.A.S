@@ -1,0 +1,83 @@
+
+
+@startuml
+
+' =====================================
+' CONFIGURACIÓN VISUAL
+' =====================================
+
+top to bottom direction
+
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam padding 10
+skinparam ArrowColor #475569
+skinparam ArrowThickness 1.3
+skinparam roundcorner 8
+
+' =====================================
+' NIVEL 1: DESARROLLO Y CI/CD
+' =====================================
+
+rectangle "Equipo de desarrollo\nGit + GitHub\n(GitFlow)" as dev #EBF2FF
+
+rectangle "GitHub Actions\nCI/CD\n(Pruebas + Build)" as ci #EBF2FF
+
+rectangle "GitHub Container Registry\n(GHCR)\nImagen Docker" as ghcr #EBF2FF
+
+dev -right-> ci : Push / Pull Request
+ci -right-> ghcr : Docker Push
+
+' =====================================
+' NIVEL 2: INFRAESTRUCTURA
+' =====================================
+
+rectangle "Terraform\nInfraestructura como código\n(IaC)" as tf #FFF3E0
+
+rectangle "AWS - Instancia EC2\nIaaS - Docker / Kubernetes" as aws #F7F7F7 {
+
+    together {
+        rectangle "API REST\nNode.js + Express\n(2 a 5 réplicas)" as api #E8F5E9
+
+        rectangle "Prometheus\nPuerto 9090" as prom #FDECEA
+    }
+
+    together {
+        database "PostgreSQL 16\nVolumen persistente" as db #E8F5E9
+
+        rectangle "Grafana\nPuerto 3001" as graf #FDECEA
+    }
+
+    api -down-> db : Sequelize / SQL
+
+    prom -down-> graf : Consulta PromQL
+
+    prom -left-> api : Scrape /metrics
+}
+
+ghcr -down..> api : Pull de imagen Docker
+
+tf -down-> aws : Aprovisiona infraestructura
+
+' =====================================
+' NIVEL 3: CLIENTE
+' =====================================
+
+rectangle "Cliente\nReact / Postman\nAutenticación JWT" as client #EBF2FF
+
+client -up-> api : REST API + JWT
+
+' =====================================
+' ALINEACIÓN VISUAL
+' =====================================
+
+dev -[hidden]down-> tf
+ci -[hidden]down-> aws
+ghcr -[hidden]down-> client
+
+@enduml
