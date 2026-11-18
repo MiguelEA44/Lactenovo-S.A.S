@@ -57,5 +57,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/lactenovo-api:latest
-            ghcr.io/${{ github.repository_owner }}/lactenovo-api:${{ github.sha }}
+            ghcr.io/MiguelEA44/lactenovo-S.A.S:latest
+            ghcr.io/MiguelEA44/lactenovo-S.A.S:${{ github.sha }}
