@@ -24,13 +24,16 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+
 // Servir interfaz web (Frontend)
 app.use(express.static(path.join(__dirname, 'public')));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200
+  max: 200,
+  skip: (req) => req.path === '/health'
 });
+
 app.use(limiter);
 
 // Instrumentación Prometheus
